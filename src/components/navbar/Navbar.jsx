@@ -1,14 +1,119 @@
-import React from 'react'
+import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+
+import "./Navbar.scss";
 
 const Navbar = () => {
+  const [active, setActive] = useState(false);
+  const [open, setOpen] = useState(false);
 
-useState
+  const { pathname } = useLocation();
+
+  const isActive = () => {
+    window.scrollY > 0 ? setActive(true) : setActive(false);
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", isActive);
+
+    return () => {
+      window.removeEventListener("scroll", isActive);
+    };
+  }, []);
+
+  const currentUser = {
+    id: 1,
+    username: "John Doe",
+    isSeller: true,
+  };
 
   return (
-    <div>Navbar
+    <div className={active || pathname !== "/" ? "navbar active" : "navbar"}>
+      <div className="container">
+        <div className="logo">
+          <Link to="/" className="link">
+            <span className="text">fiverr</span>
+          </Link>
 
+          <span className="dot">.</span>
+        </div>
+        <div className="links">
+          <span>Fiverr Business</span>
+          <span>Explore</span>
+          <span>English</span>
+          <span>Sign In</span>
+          {!currentUser?.isSeller && <span>Become a Seller</span>}
+          {!currentUser && <button className="button">Join</button>}
+          {currentUser && (
+            <div className="user" onClick={() => setOpen(!open)}>
+              <img
+                src="https://fiverr-res.cloudinary.com/t_profile_thumb,q_auto,f_auto/attachments/profile/photo/24fce8d90e2e21d2153501b23b70a996-1675703231121/263aa290-2cd3-414f-8216-f847c87c4702.png"
+                alt=""
+              />
+              <span>{currentUser.username}</span>
+              {open && (
+                <div className="options">
+                  {currentUser?.isSeller && (
+                    <>
+                      <Link className="link" to="/mygigs">
+                        Gigs
+                      </Link>
+                      <Link className="link" to="/add">
+                        Add New Gig
+                      </Link>
+                    </>
+                  )}
+                  <Link className="link" to="/orders">
+                    Orders
+                  </Link>
+                  <Link className="link" to="/messages">
+                    Messages
+                  </Link>
+                  <Link className="link" to="/">
+                    Logout
+                  </Link>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+      {(active || pathname !== "/") && (
+        <>
+          <hr />
+          <div className="menu">
+            <div className="link menuLink" to="/">
+              Graphics & Design
+            </div>
+            <Link className="link" to="/">
+              Video & Animation
+            </Link>
+            <Link className="link" to="/">
+              Writing & Translation
+            </Link>
+            <Link className="link" to="/">
+              AI Services
+            </Link>
+            <Link className="link" to="/">
+              Digital Marketing
+            </Link>
+            <Link className="link" to="/">
+              Music & Audio
+            </Link>
+            <Link className="link" to="/">
+              Programming & Tech
+            </Link>
+            <Link className="link" to="/">
+              Business
+            </Link>
+            <Link className="link" to="/">
+              Lifestyle
+            </Link>
+          </div>
+        </>
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;
